@@ -19,6 +19,10 @@ public class AttackCommand : MonoBehaviour, ICommand
 
     public bool CanExecute(ISelectable executer)
     {
+        if (target != executer)
+        {
+            return false;
+        }
         return target != null && executer is Unit;
     }
 

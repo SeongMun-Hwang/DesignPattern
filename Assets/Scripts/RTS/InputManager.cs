@@ -11,6 +11,8 @@ public class InputManager : MonoBehaviour
         Move,
     }
     private CommandMode commandMode = CommandMode.None;
+
+    public CommandUI commandUI;
     void Start()
     {
         unitSelector = FindFirstObjectByType<UnitSelector>();
@@ -24,6 +26,10 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.M))
         {
             commandMode = CommandMode.Move;
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            HandleProduceCommand();
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -48,6 +54,7 @@ public class InputManager : MonoBehaviour
         {
             unitSelector.DeselectAll();
         }
+        commandUI.DisplayCommands(unitSelector.GetSelectedUnits());
     }
     void HandleLeftClick()
     {
@@ -89,6 +96,7 @@ public class InputManager : MonoBehaviour
                 unitSelector.DeselectAll();
             }
         }
+        commandUI.DisplayCommands(unitSelector.GetSelectedUnits());
     }
     void HandleRightClick()
     {
@@ -154,6 +162,21 @@ public class InputManager : MonoBehaviour
             else
             {
                 //æÓ≈√∂•
+            }
+        }
+    }
+    void HandleProduceCommand()
+    {
+        List<ISelectable> selectedUnits=unitSelector.GetSelectedUnits();
+        foreach(var selectable in selectedUnits)
+        {
+            if(selectable is Building building)
+            {
+                ICommand produceCommand=building.GetComponent<ProductUnitCommand>();
+                if(produceCommand != null)
+                {
+                    building.ExcuteCommand(produceCommand);
+                }
             }
         }
     }
